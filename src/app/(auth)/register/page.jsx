@@ -12,7 +12,7 @@ const RegisterPage = () => {
     username: "",
     email: "",
     password: "",
-    confirmPassword: "",
+    password_confirmation: "",
     error: null,
     isLoading: false,
   });
@@ -79,27 +79,27 @@ const RegisterPage = () => {
                 />
               </div>
               <div className="pb-4">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+                <Label htmlFor="password_confirmation">Confirm Password</Label>
                 <Input
-                  type="confirmPassword"
-                  placeholder="Enter your confirmPassword..."
-                  id="confirmPassword"
-                  value={authState.confirmPassword}
+                  type="password_confirmation"
+                  placeholder="Enter your password_confirmation..."
+                  id="password_confirmation"
+                  value={authState.password_confirmation}
                   onChange={(e) =>
                     setAuthState({
                       ...authState,
-                      confirmPassword: e.target.value,
+                      password_confirmation: e.target.value,
                     })
                   }
                 />
               </div>
               <div className="pb-4">
-                <Button className=" w-full">Login</Button>
+                <Button className=" w-full">Register</Button>
               </div>
               <div className="">
                 <span> already have an Account? </span>
-                <Link href="/register" className=" text-orange-500 font-bold">
-                  Register Now
+                <Link href="/login" className=" text-orange-500 font-bold">
+                  Login
                 </Link>
               </div>
             </form>

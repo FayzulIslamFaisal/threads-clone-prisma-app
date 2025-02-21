@@ -53,7 +53,7 @@ const loginPage = () => {
               </div>
               
               <div className="pb-4">
-                <Button className=" w-full">Login</Button>
+                <Button className="w-full">Login</Button>
               </div>
               <div className="">
                 <span> Dont Have a Account? </span>
