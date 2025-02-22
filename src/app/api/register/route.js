@@ -1,9 +1,9 @@
 import { registerSchema } from "@/app/validation/register";
 import vine, { errors } from "@vinejs/vine";
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { genSaltSync, hashSync } from "bcrypt";
 import { prisma } from "@/app/utils/db";
-export const POST = async (req, res) => {
+export const POST = async (req) => {
   try {
     const data = await req.json();
     const validator = vine.compile(registerSchema);
@@ -33,18 +33,20 @@ export const POST = async (req, res) => {
 
     const user = await prisma.User.create({
       data: {
-        payload,
+        name: payload.name,
+        username: payload.username,
+        email: payload.email,
+        password: payload.password,
       },
     });
     return NextResponse.json(
-      { user, message: "User created successfully" },
+      { message: "User created successfully", user },
       { status: 201 }
     );
   } catch (error) {
     if (error instanceof errors.E_VALIDATION_ERROR) {
       return NextResponse.json({ errors: error.messages }, { status: 400 });
     }
-
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }
