@@ -18,6 +18,7 @@ const RegisterPage = () => {
     password: "",
     password_confirmation: "",
   });
+  const [error, setError] = useState("");
 
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -27,10 +28,10 @@ const RegisterPage = () => {
     startTransition(async () => {
       try {
         const response = await UserPostRegister(authState);
-        console.log(response, "<<<====response");
 
-        if (response?.error) {
-          toast.error(response.error);
+        if (response?.status === 400) {
+          setError(response.message);
+          toast.error(response.message);
         } else {
           toast.success("Registration successful! Redirecting to login...");
           setTimeout(() => router.push("/login"), 2000); // Redirect after 2s
@@ -66,6 +67,11 @@ const RegisterPage = () => {
                 }
               />
             </div>
+            {error && (
+              <div className="py-3">
+                <p className="text-red-500">{error}</p>
+              </div>
+            )}
             <div className="pb-4">
               <Label htmlFor="username">Username</Label>
               <Input
@@ -79,6 +85,11 @@ const RegisterPage = () => {
                 }
               />
             </div>
+            {error && (
+              <div className="py-3">
+                <p className="text-red-500">{error}</p>
+              </div>
+            )}
             <div className="pb-4">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -92,6 +103,11 @@ const RegisterPage = () => {
                 }
               />
             </div>
+            {error && (
+              <div className="py-3">
+                <p className="text-red-500">{error}</p>
+              </div>
+            )}
             <div className="pb-4">
               <Label htmlFor="password">Password</Label>
               <Input
@@ -105,6 +121,11 @@ const RegisterPage = () => {
                 }
               />
             </div>
+            {error && (
+              <div className="py-3">
+                <p className="text-red-500">{error}</p>
+              </div>
+            )}
             <div className="pb-4">
               <Label htmlFor="password_confirmation">Confirm Password</Label>
               <Input
@@ -121,6 +142,11 @@ const RegisterPage = () => {
                 }
               />
             </div>
+            {error && (
+              <div className="py-3">
+                <p className="text-red-500">{error}</p>
+              </div>
+            )}
             <div className="pb-4">
               <Button type="submit" className="w-full" disabled={isPending}>
                 {isPending ? "Registering..." : "Register"}

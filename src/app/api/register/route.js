@@ -13,19 +13,19 @@ export const POST = async (req) => {
       where: { email: payload.email },
     });
     if (isEmailExist) {
-      return NextResponse.json(
-        { errors: { email: "Email already exists" } },
-        { status: 400 }
-      );
+      return NextResponse.json({
+        status: 400,
+        message: "Email already exists",
+      });
     }
     const isUsernameExist = await prisma.User.findUnique({
       where: { username: payload.username },
     });
     if (isUsernameExist) {
-      return NextResponse.json(
-        { errors: { username: "Username already exists" } },
-        { status: 400 }
-      );
+      return NextResponse.json({
+        status: 400,
+        message: "Username already exists",
+      });
     }
 
     const salt = genSaltSync(10);
@@ -40,8 +40,8 @@ export const POST = async (req) => {
       },
     });
     return NextResponse.json(
-      { message: "User created successfully", user },
-      { status: 201 }
+      { status: 201 },
+      { message: "User created successfully", user }
     );
   } catch (error) {
     if (error instanceof errors.E_VALIDATION_ERROR) {

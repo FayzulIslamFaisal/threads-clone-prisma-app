@@ -19,10 +19,10 @@ export const POST = async (req) => {
     console.log("User found:", findUser);
 
     if (!findUser) {
-      return NextResponse.json(
-        { errors: { email: "Email does not match. Please try again" } },
-        { status: 400 }
-      );
+      return NextResponse.json({
+        status: 400,
+        message: "Email does not match. Please try again",
+      });
     }
 
     // Check password match
@@ -30,10 +30,10 @@ export const POST = async (req) => {
     console.log("Password match:", isPasswordMatch); // Debugging
 
     if (!isPasswordMatch) {
-      return NextResponse.json(
-        { message: "Invalid Credentials" },
-        { status: 400 }
-      );
+      return NextResponse.json({
+        status: 400,
+        message: "Password does not match. Please try again",
+      });
     }
 
     return NextResponse.json({ message: "Login successful" }, { status: 200 });
@@ -41,9 +41,6 @@ export const POST = async (req) => {
     if (error instanceof errors.E_VALIDATION_ERROR) {
       return NextResponse.json({ errors: error.messages }, { status: 400 });
     }
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ status: 500, error: "Internal Server Error" });
   }
 };

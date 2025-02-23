@@ -1,18 +1,20 @@
 "use client";
+import { UserLogin } from "@/app/sevices/UserLogin";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import { signIn } from "next-auth/react";
 
 const loginPage = () => {
   const [authState, setAuthState] = useState({
     email: "",
     password: "",
   });
+  const [error, setError] = useState("");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -23,11 +25,17 @@ const loginPage = () => {
         const response = await UserLogin(authState);
         console.log(response, "<<<====log response");
 
-        if (response?.error) {
-          toast.error(response.error);
+        if (response?.status === 400) {
+          setError(response.message);
+          toast.error(response.message);
         } else {
           toast.success("Registration successful! Redirecting to login...");
-          setTimeout(() => router.push("/"), 2000); // Redirect after 2s
+          signIn("credentials", {
+            username: authState.email,
+            password: authState.password,
+            callbackUrl: "/",
+            redirect: true,
+          });
         }
       } catch (error) {
         toast.error("Something went wrong. Please try again.");
@@ -59,6 +67,11 @@ const loginPage = () => {
                     }
                   />
                 </div>
+                {error && (
+                  <div className="py-3">
+                    <p className="text-red-500">{error}</p>
+                  </div>
+                )}
                 <div className="pb-4">
                   <Label htmlFor="password">password</Label>
                   <Input
@@ -72,6 +85,11 @@ const loginPage = () => {
                     }
                   />
                 </div>
+                {error && (
+                  <div className="py-3">
+                    <p className="text-red-500">{error}</p>
+                  </div>
+                )}
 
                 <div className="pb-4">
                   <Button className="w-full" disabled={isPending}>
