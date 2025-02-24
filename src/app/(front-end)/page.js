@@ -1,12 +1,16 @@
 import ThemeToggleBtn from "@/components/common/ThemeToggleBtn";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../api/auth/[...nextauth]/options";
 
-export default function Home() {
+const Home = async () => {
+  const session = await getServerSession(authOptions);
+  console.log("session", session);
   return (
     <>
       <ThemeToggleBtn />
       <Button> click me</Button>
     </>
   );
-}
+};
+export default Home;

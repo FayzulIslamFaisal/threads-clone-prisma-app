@@ -5,9 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 const loginPage = () => {
   const [authState, setAuthState] = useState({
@@ -17,9 +17,16 @@ const loginPage = () => {
   const [error, setError] = useState("");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const { data: session, status } = useSession();
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    useEffect(() => {
+      if (status === "authenticated") {
+        router.push("/");
+      }
+    }, [status]);
+    console.log("status===>", status);
     startTransition(async () => {
       try {
         const response = await UserLogin(authState);
@@ -28,20 +35,24 @@ const loginPage = () => {
         if (response?.status === 400) {
           setError(response.message);
           toast.error(response.message);
+          console.log(response, "<<<====log response error");
         } else {
-          toast.success("Registration successful! Redirecting to login...");
           signIn("credentials", {
-            username: authState.email,
+            email: authState.email,
             password: authState.password,
-            callbackUrl: "/",
-            redirect: true,
+            // callbackUrl: "/",
+            redirect: false,
           });
+          toast.success("Login successful! Redirecting...");
+          router.push("/");
+          console.log(response, "<<<====log response redirect");
         }
       } catch (error) {
         toast.error("Something went wrong. Please try again.");
       }
     });
   };
+
   return (
     <>
       <ToastContainer />
